@@ -59,7 +59,7 @@ export default async function IssuePage({params}: {params: Params}) {
       <JsonLd
         data={breadcrumbJsonLd([HOME_CRUMB, ARCHIVE_CRUMB, {name: issue.title, path: issue.url}])}
       />
-      {issue.layout === 'email' ? (
+      {issue.layout ? (
         <Inbox
           issues={getIssues()}
           name={NEWSLETTER_NAME}

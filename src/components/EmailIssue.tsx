@@ -1,4 +1,5 @@
 import type {Issue} from '@/lib/issues';
+import {EmailFrame} from './EmailFrame';
 
 const COLUMN = 600; // standard email width
 
@@ -11,6 +12,10 @@ export function EmailIssue({issue}: {issue: Issue}) {
   return (
     <div className="email-page embedded">
       <h1 className="sr-only">{issue.title}</h1>
+      {issue.layout === 'email-html' && issue.emailHtml ? (
+        <EmailFrame src={issue.emailHtml} title={issue.title} />
+      ) : (
+      <>
       <article className="email-col" aria-label={issue.title}>
         {issue.emailImages?.map((img, i) => {
           const tag = (
@@ -33,6 +38,8 @@ export function EmailIssue({issue}: {issue: Issue}) {
           );
         })}
       </article>
+      </>
+      )}
     </div>
   );
 }

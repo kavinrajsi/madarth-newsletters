@@ -96,3 +96,4 @@ body {
   border: 0;
 }
 .email-page.embedded { padding-top: 24px; }
+.email-page.embedded:has(iframe) { padding: 0; background: #efefef; }

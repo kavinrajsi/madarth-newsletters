@@ -26,7 +26,8 @@ export interface Issue {
   image?: string; // path, for <img>
   imageUrl?: string; // absolute, for OG / JSON-LD
   imageAlt?: string;
-  layout?: 'email';
+  layout?: 'email' | 'email-html';
+  emailHtml?: string; // path to a standalone HTML email rendered in an iframe
   emailImages?: {src: string; alt: string; w: number; h: number; href?: string}[];
   html: string;
 }
@@ -67,6 +68,7 @@ export function getIssues(): Issue[] {
             imageUrl: data.image ? (String(data.image).startsWith('/') ? `${SITE_URL}${data.image}` : data.image) : undefined,
             imageAlt: data.imageAlt,
             layout: data.layout,
+            emailHtml: data.emailHtml,
             emailImages: data.emailImages,
             html: marked.parse(content, {async: false}) as string,
           });
