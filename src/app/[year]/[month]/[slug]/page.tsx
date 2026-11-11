@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {JsonLd} from '@/components/JsonLd';
+import {EmailIssue} from '@/components/EmailIssue';
 import {SignupForm} from '@/components/SignupForm';
 import {formatDate, getIssue, getIssues, getRelated, slugify} from '@/lib/issues';
 import {ARCHIVE_CRUMB, HOME_CRUMB, breadcrumbJsonLd, buildMetadata, organizationRef} from '@/lib/seo';
@@ -58,6 +59,9 @@ export default async function IssuePage({params}: {params: Params}) {
       <JsonLd
         data={breadcrumbJsonLd([HOME_CRUMB, ARCHIVE_CRUMB, {name: issue.title, path: issue.url}])}
       />
+      {issue.layout === 'email' ? (
+        <EmailIssue issue={issue} related={related} />
+      ) : (
       <main className="page">
         <nav className="crumbs" aria-label="Breadcrumb">
           <a href={SITE_URL}>Home</a> › <a href={href()}>{NEWSLETTER_NAME}</a>
@@ -97,6 +101,7 @@ export default async function IssuePage({params}: {params: Params}) {
           </p>
         </section>
       </main>
+      )}
     </>
   );
 }

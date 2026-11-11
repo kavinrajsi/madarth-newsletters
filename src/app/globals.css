@@ -38,3 +38,48 @@ body {
 .signup-row { display: flex; gap: 8px; }
 .signup-row input { flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--color-text-secondary); background: transparent; color: inherit; }
 .signup-row button { padding: 8px 16px; border-radius: 8px; border: 0; cursor: pointer; }
+
+/* Email-style issue: standard 600px column on a light grey page. Explicit light
+   colours so it reads like the inbox version regardless of the Astryx theme. */
+.email-page {
+  min-height: 100dvh;
+  background: #f0f0f0;
+  color: #1a1a1a;
+  padding: 24px 12px 64px;
+  line-height: 1.6;
+}
+.email-top,
+.email-col,
+.email-below {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.email-top h1 { font-size: 1.35rem; line-height: 1.3; margin: 8px 0; }
+.email-page a { color: #c4441c; }
+.email-page .crumbs,
+.email-page .byline { color: #555; }
+.email-page .summary { border-left-color: #da5326; color: #333; font-size: 0.95rem; }
+.email-col { background: #fff; }
+.email-col img { display: block; width: 100%; height: auto; border-radius: 0; }
+.email-col a { display: block; }
+.email-below { margin-top: 24px; }
+.email-text { margin-bottom: 24px; }
+.email-text summary { cursor: pointer; font-weight: 600; }
+.email-text div { padding-top: 8px; }
+.email-page h2 { font-size: 1.2rem; margin: 1.5rem 0 0.5rem; }
+.email-page h3 { font-size: 1.05rem; margin: 1.2rem 0 0.4rem; }
+.email-page p, .email-page ul, .email-page ol { margin: 0 0 1rem; }
+.email-page .chips a { border-color: #999; color: #333; }
+.email-page .signup { border-color: #bbb; background: #fff; }
+.email-page .signup label { color: #1a1a1a; }
+.email-page .signup-row input { border-color: #bbb; color: #1a1a1a; }
+.email-page .signup-row button { background: #da5326; color: #fff; }
+.email-page h1,
+.email-page h2,
+.email-page h3,
+.email-page summary,
+.email-page li { color: #1a1a1a; }
+.email-page .email-text div { color: #1a1a1a; }
+.email-page p, .email-page ul, .email-page ol { color: #1a1a1a; }
+.email-page .byline, .email-page .crumbs { color: #555; }

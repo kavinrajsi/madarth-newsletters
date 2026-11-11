@@ -23,6 +23,8 @@ export interface Issue {
   image?: string; // path, for <img>
   imageUrl?: string; // absolute, for OG / JSON-LD
   imageAlt?: string;
+  layout?: 'email';
+  emailImages?: {src: string; alt: string; w: number; h: number; href?: string}[];
   html: string;
 }
 
@@ -64,6 +66,8 @@ export function getIssues(): Issue[] {
             image: data.image,
             imageUrl: data.image ? (String(data.image).startsWith('/') ? `${SITE_URL}${data.image}` : data.image) : undefined,
             imageAlt: data.imageAlt,
+            layout: data.layout,
+            emailImages: data.emailImages,
             html: marked.parse(content, {async: false}) as string,
           });
         }
