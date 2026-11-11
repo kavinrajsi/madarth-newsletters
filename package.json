@@ -1,0 +1,31 @@
+{
+  "name": "madarth-newsletters",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@astryxdesign/core": "^0.7.13",
+    "@astryxdesign/theme-neutral": "*",
+    "@stylexjs/stylex": "^0.19.1",
+    "next": "^16.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astryxdesign/cli": "^0.7.13",
+    "@babel/preset-react": "^7.27.0",
+    "@babel/preset-typescript": "^7.27.0",
+    "@stylexjs/babel-plugin": "^0.19.1",
+    "@stylexjs/postcss-plugin": "^0.19.1",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "typescript": "^5.6.0"
+  },
+  "browserslist": ["last 1 Chrome version"]
+}
