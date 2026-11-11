@@ -1,6 +1,6 @@
 import {JsonLd} from '@/components/JsonLd';
 import {Inbox} from '@/components/Inbox';
-import {getIssues, getTopics} from '@/lib/issues';
+import {getIssues} from '@/lib/issues';
 import {ARCHIVE_CRUMB, HOME_CRUMB, breadcrumbJsonLd, buildMetadata, organizationRef} from '@/lib/seo';
 import {NEWSLETTER_DESCRIPTION, NEWSLETTER_NAME, url} from '@/lib/site';
 
@@ -29,8 +29,6 @@ export default function ArchiveHome() {
       <Inbox
         issues={issues}
         name={NEWSLETTER_NAME}
-        description={NEWSLETTER_DESCRIPTION}
-        topics={getTopics()}
       />
     </>
   );

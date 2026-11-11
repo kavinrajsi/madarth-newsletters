@@ -14,7 +14,6 @@ import {Divider} from '@astryxdesign/core/Divider';
 import type {Issue} from '@/lib/issues';
 import {href} from '@/lib/site';
 import {EmailIssue} from './EmailIssue';
-import {SignupForm} from './SignupForm';
 
 function SidebarGlyph(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -31,14 +30,10 @@ const fmt = (iso: string) =>
 export function Inbox({
   issues,
   name,
-  description,
-  topics,
   initialPath = null,
 }: {
   issues: Issue[];
   name: string;
-  description: string;
-  topics: {slug: string; name: string; count: number}[];
   initialPath?: string | null;
 }) {
   const [query, setQuery] = useState('');
@@ -141,7 +136,8 @@ export function Inbox({
         start={sidebarOpen ? sidebar : undefined}
         header={
           <LayoutHeader hasDivider>
-            <HStack gap={3} align="center">
+            <HStack gap={3} align="center" justify="between" style={{width: '100%'}}>
+              <HStack gap={3} align="center">
               <IconButton
                 label={sidebarOpen ? 'Hide issues' : 'Show issues'}
                 variant="ghost"
@@ -161,6 +157,8 @@ export function Inbox({
                   <BreadcrumbItem isCurrent>Newsletters</BreadcrumbItem>
                 )}
               </Breadcrumbs>
+              </HStack>
+              <a className="rss-link" href={href('/rss.xml')}>RSS feed</a>
             </HStack>
           </LayoutHeader>
         }
@@ -169,26 +167,7 @@ export function Inbox({
             {selected ? (
               <EmailIssue key={selected.slug} issue={selected} />
             ) : (
-              <VStack gap={4} style={{padding: 'var(--spacing-5)', maxWidth: 640}}>
-                <Heading level={1}>{name}</Heading>
-                <Text>{description}</Text>
-                <SignupForm />
-                {topics.length > 0 && (
-                  <VStack gap={2}>
-                    <Heading level={2}>Topics</Heading>
-                    <ul className="chips" style={{padding: 0}}>
-                      {topics.map((t) => (
-                        <li key={t.slug}>
-                          <a href={`/newsletters/topics/${t.slug}`}>{t.name} ({t.count})</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </VStack>
-                )}
-                <Text type="supporting" color="secondary">
-                  <a href="/newsletters/rss.xml">RSS feed</a>
-                </Text>
-              </VStack>
+              <h1 className="sr-only">{name}</h1>
             )}
           </LayoutContent>
         }

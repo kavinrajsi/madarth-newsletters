@@ -4,9 +4,9 @@ import {notFound} from 'next/navigation';
 import {JsonLd} from '@/components/JsonLd';
 import {Inbox} from '@/components/Inbox';
 import {SignupForm} from '@/components/SignupForm';
-import {formatDate, getIssue, getIssues, getRelated, getTopics, slugify} from '@/lib/issues';
+import {formatDate, getIssue, getIssues, getRelated, slugify} from '@/lib/issues';
 import {ARCHIVE_CRUMB, HOME_CRUMB, breadcrumbJsonLd, buildMetadata, organizationRef} from '@/lib/seo';
-import {NEWSLETTER_DESCRIPTION, NEWSLETTER_NAME, SITE_URL, href} from '@/lib/site';
+import {NEWSLETTER_NAME, SITE_URL, href} from '@/lib/site';
 
 type Params = Promise<{year: string; month: string; slug: string}>;
 
@@ -63,8 +63,6 @@ export default async function IssuePage({params}: {params: Params}) {
         <Inbox
           issues={getIssues()}
           name={NEWSLETTER_NAME}
-          description={NEWSLETTER_DESCRIPTION}
-          topics={getTopics()}
           initialPath={issue.path}
         />
       ) : (

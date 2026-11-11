@@ -97,3 +97,5 @@ body {
 }
 .email-page.embedded { padding-top: 24px; }
 .email-page.embedded:has(iframe) { padding: 0; background: #efefef; }
+.rss-link { font-size: 0.875rem; color: inherit; opacity: 0.75; text-decoration: none; white-space: nowrap; }
+.rss-link:hover { opacity: 1; text-decoration: underline; }
