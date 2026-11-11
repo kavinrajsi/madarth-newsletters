@@ -6,7 +6,6 @@ import {Layout, LayoutContent, LayoutHeader, LayoutPanel, HStack, VStack} from '
 import {Text, Heading} from '@astryxdesign/core/Text';
 import {List, ListItem} from '@astryxdesign/core/List';
 import {TextInput} from '@astryxdesign/core/TextInput';
-import {Switch} from '@astryxdesign/core/Switch';
 import {IconButton} from '@astryxdesign/core/IconButton';
 import {Icon} from '@astryxdesign/core/Icon';
 import {Breadcrumbs, BreadcrumbItem} from '@astryxdesign/core/Breadcrumbs';
@@ -39,27 +38,20 @@ export function Inbox({
   topics: {slug: string; name: string; count: number}[];
 }) {
   const [query, setQuery] = useState('');
-  const [recentOnly, setRecentOnly] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const cutoff = Date.now() - 1000 * 60 * 60 * 24 * 60;
     return issues.filter(
-      (n) =>
-        (!recentOnly || new Date(n.date).getTime() > cutoff) &&
-        (!q || `${n.title} ${n.summary} ${n.topics.join(' ')}`.toLowerCase().includes(q)),
+      (n) => !q || `${n.title} ${n.summary} ${n.topics.join(' ')}`.toLowerCase().includes(q),
     );
-  }, [issues, query, recentOnly]);
+  }, [issues, query]);
 
   const sidebar = (
     <LayoutPanel width={380} hasDivider>
       <VStack gap={3} style={{height: '100%', minHeight: 0}}>
         <VStack gap={3} style={{padding: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)'}}>
-          <HStack justify="between" align="center">
-            <Heading level={2}>Issues</Heading>
-            <Switch label="Last 60 days" value={recentOnly} onChange={setRecentOnly} />
-          </HStack>
+          <Heading level={2}>Issues</Heading>
           <TextInput
             label="Search issues"
             isLabelHidden
