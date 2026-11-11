@@ -28,14 +28,6 @@ function SidebarGlyph(props: React.SVGProps<SVGSVGElement>) {
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata'});
 
-const related = (issues: Issue[], issue: Issue, limit = 3) =>
-  issues
-    .filter((i) => i.slug !== issue.slug)
-    .map((i) => ({i, score: i.topics.filter((t) => issue.topics.includes(t)).length}))
-    .sort((a, b) => b.score - a.score || b.i.date.localeCompare(a.i.date))
-    .slice(0, limit)
-    .map((x) => x.i);
-
 export function Inbox({
   issues,
   name,
@@ -175,7 +167,7 @@ export function Inbox({
         content={
           <LayoutContent>
             {selected ? (
-              <EmailIssue key={selected.slug} issue={selected} related={related(issues, selected)} embedded />
+              <EmailIssue key={selected.slug} issue={selected} />
             ) : (
               <VStack gap={4} style={{padding: 'var(--spacing-5)', maxWidth: 640}}>
                 <Heading level={1}>{name}</Heading>
