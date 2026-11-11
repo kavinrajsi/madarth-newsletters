@@ -23,7 +23,7 @@ export async function generateMetadata({params}: {params: Params}): Promise<Meta
     title: `${issue.title} | ${NEWSLETTER_NAME}`,
     description: issue.description,
     path: `/${year}/${month}/${slug}`,
-    image: issue.image,
+    image: issue.imageUrl,
     imageAlt: issue.imageAlt,
     type: 'article',
     publishedTime: issue.date,
@@ -52,7 +52,7 @@ export default async function IssuePage({params}: {params: Params}) {
           publisher: organizationRef(),
           mainEntityOfPage: issue.url,
           url: issue.url,
-          ...(issue.image ? {image: issue.image} : {}),
+          ...(issue.imageUrl ? {image: issue.imageUrl} : {}),
         }}
       />
       <JsonLd

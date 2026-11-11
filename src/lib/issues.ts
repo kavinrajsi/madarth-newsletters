@@ -3,7 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import {marked} from 'marked';
 
-import {href, url} from './site';
+import {SITE_URL, href, url} from './site';
 
 const DIR = path.join(process.cwd(), 'content', 'issues');
 
@@ -20,7 +20,8 @@ export interface Issue {
   modified: string; // ISO
   author: string;
   topics: string[];
-  image?: string;
+  image?: string; // path, for <img>
+  imageUrl?: string; // absolute, for OG / JSON-LD
   imageAlt?: string;
   html: string;
 }
@@ -61,6 +62,7 @@ export function getIssues(): Issue[] {
             author: data.author || 'Madarth® Team',
             topics: data.topics || [],
             image: data.image,
+            imageUrl: data.image ? (String(data.image).startsWith('/') ? `${SITE_URL}${data.image}` : data.image) : undefined,
             imageAlt: data.imageAlt,
             html: marked.parse(content, {async: false}) as string,
           });
