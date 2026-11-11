@@ -1,5 +1,5 @@
 import {SignupForm} from './SignupForm';
-import {formatDate, slugify} from '@/lib/issues';
+import {formatDate, slugify} from '@/lib/format';
 import type {Issue} from '@/lib/issues';
 import {NEWSLETTER_NAME, SITE_URL, href} from '@/lib/site';
 
@@ -10,13 +10,15 @@ const COLUMN = 600; // standard email width
  * stacked images on a light grey page. Each image's alt text carries the text
  * baked into it, and the full text version sits below in a <details> block.
  */
-export function EmailIssue({issue, related}: {issue: Issue; related: Issue[]}) {
+export function EmailIssue({issue, related, embedded = false}: {issue: Issue; related: Issue[]; embedded?: boolean}) {
   return (
-    <div className="email-page">
+    <div className={embedded ? 'email-page embedded' : 'email-page'}>
       <header className="email-top">
-        <nav className="crumbs" aria-label="Breadcrumb">
-          <a href={SITE_URL}>Home</a> › <a href={href()}>{NEWSLETTER_NAME}</a>
-        </nav>
+        {!embedded && (
+          <nav className="crumbs" aria-label="Breadcrumb">
+            <a href={SITE_URL}>Home</a> › <a href={href()}>{NEWSLETTER_NAME}</a>
+          </nav>
+        )}
         <h1>{issue.title}</h1>
         <p className="byline">
           By {issue.author} · <time dateTime={issue.date}>{formatDate(issue.date)}</time>

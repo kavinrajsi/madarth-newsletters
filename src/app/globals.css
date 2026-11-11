@@ -83,3 +83,4 @@ body {
 .email-page .email-text div { color: #1a1a1a; }
 .email-page p, .email-page ul, .email-page ol { color: #1a1a1a; }
 .email-page .byline, .email-page .crumbs { color: #555; }
+.email-page.embedded { min-height: 0; padding: 24px 16px 48px; }

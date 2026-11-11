@@ -3,7 +3,10 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import {marked} from 'marked';
 
+import {slugify} from './format';
 import {SITE_URL, href, url} from './site';
+
+export {formatDate, slugify} from './format';
 
 const DIR = path.join(process.cwd(), 'content', 'issues');
 
@@ -27,9 +30,6 @@ export interface Issue {
   emailImages?: {src: string; alt: string; w: number; h: number; href?: string}[];
   html: string;
 }
-
-export const slugify = (s: string) =>
-  s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 // Drafts are visible in dev/preview but never published to production.
 const hideDrafts = process.env.VERCEL_ENV === 'production';
@@ -104,5 +104,3 @@ export const getRelated = (issue: Issue, limit = 3) =>
 export const toListItem = ({html: _html, ...rest}: Issue) => rest;
 export type IssueListItem = ReturnType<typeof toListItem>;
 
-export const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-IN', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Kolkata'});

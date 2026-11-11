@@ -1,6 +1,6 @@
 'use client';
 
-import {useMemo, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 
 import {Layout, LayoutContent, LayoutHeader, LayoutPanel, HStack, VStack} from '@astryxdesign/core/Layout';
 import {Text, Heading} from '@astryxdesign/core/Text';
@@ -11,7 +11,9 @@ import {Icon} from '@astryxdesign/core/Icon';
 import {Breadcrumbs, BreadcrumbItem} from '@astryxdesign/core/Breadcrumbs';
 import {Divider} from '@astryxdesign/core/Divider';
 
-import type {IssueListItem} from '@/lib/issues';
+import type {Issue} from '@/lib/issues';
+import {href} from '@/lib/site';
+import {EmailIssue} from './EmailIssue';
 import {SignupForm} from './SignupForm';
 
 function SidebarGlyph(props: React.SVGProps<SVGSVGElement>) {
@@ -26,25 +28,60 @@ function SidebarGlyph(props: React.SVGProps<SVGSVGElement>) {
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata'});
 
+const related = (issues: Issue[], issue: Issue, limit = 3) =>
+  issues
+    .filter((i) => i.slug !== issue.slug)
+    .map((i) => ({i, score: i.topics.filter((t) => issue.topics.includes(t)).length}))
+    .sort((a, b) => b.score - a.score || b.i.date.localeCompare(a.i.date))
+    .slice(0, limit)
+    .map((x) => x.i);
+
 export function Inbox({
   issues,
   name,
   description,
   topics,
+  initialPath = null,
 }: {
-  issues: IssueListItem[];
+  issues: Issue[];
   name: string;
   description: string;
   topics: {slug: string; name: string; count: number}[];
+  initialPath?: string | null;
 }) {
   const [query, setQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedPath, setSelectedPath] = useState<string | null>(initialPath);
+
+  const selected = issues.find((i) => i.path === selectedPath) ?? null;
+  const homeTitle = `${name} | Newsletter Archive`;
+
+  // Open an issue in the right pane without a page load; keep a shareable URL.
+  const open = useCallback(
+    (issue: Issue | null) => {
+      setSelectedPath(issue ? issue.path : null);
+      window.history.pushState({}, '', issue ? issue.path : href());
+      document.title = issue ? `${issue.title} | ${name}` : homeTitle;
+      document.querySelector('.astryx-layout-content')?.scrollTo({top: 0});
+    },
+    [name, homeTitle],
+  );
+
+  // Browser back/forward.
+  useEffect(() => {
+    const onPop = () => {
+      const p = window.location.pathname.replace(/\/$/, '');
+      const match = issues.find((i) => i.path === p) ?? null;
+      setSelectedPath(match ? match.path : null);
+      document.title = match ? `${match.title} | ${name}` : homeTitle;
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, [issues, name, homeTitle]);
 
   const items = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return issues.filter(
-      (n) => !q || `${n.title} ${n.summary} ${n.topics.join(' ')}`.toLowerCase().includes(q),
-    );
+    return issues.filter((n) => !q || `${n.title} ${n.summary} ${n.topics.join(' ')}`.toLowerCase().includes(q));
   }, [issues, query]);
 
   const sidebar = (
@@ -62,7 +99,20 @@ export function Inbox({
           />
         </VStack>
         <Divider />
-        <div style={{overflowY: 'auto', minHeight: 0, flex: 1}}>
+        <div
+          style={{overflowY: 'auto', minHeight: 0, flex: 1}}
+          // Capture clicks on the issue links: plain clicks open the issue in the
+          // right pane (no page load); modified clicks keep normal link behaviour.
+          onClickCapture={(e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+            const a = (e.target as HTMLElement).closest('a[href]');
+            const issue = a && issues.find((i) => i.path === a.getAttribute('href'));
+            if (!issue) return;
+            e.preventDefault();
+            e.stopPropagation();
+            open(issue);
+          }}
+        >
           {items.length === 0 ? (
             <div style={{padding: 'var(--spacing-4)'}}>
               <Text color="secondary">No issues found.</Text>
@@ -73,6 +123,7 @@ export function Inbox({
                 <ListItem
                   key={n.slug}
                   href={n.path}
+                  isSelected={n.path === selectedPath}
                   label={
                     <VStack gap={1}>
                       <HStack justify="between" align="center">
@@ -107,33 +158,46 @@ export function Inbox({
               />
               <Breadcrumbs separator="›">
                 <BreadcrumbItem href="https://www.madarth.com/">Madarth®</BreadcrumbItem>
-                <BreadcrumbItem isCurrent>Newsletters</BreadcrumbItem>
+                {selected ? (
+                  <>
+                    <BreadcrumbItem href={href()} onClick={(e) => { e.preventDefault(); open(null); }}>
+                      Newsletters
+                    </BreadcrumbItem>
+                    <BreadcrumbItem isCurrent>{selected.title.split(':')[0]}</BreadcrumbItem>
+                  </>
+                ) : (
+                  <BreadcrumbItem isCurrent>Newsletters</BreadcrumbItem>
+                )}
               </Breadcrumbs>
             </HStack>
           </LayoutHeader>
         }
         content={
           <LayoutContent>
-            <VStack gap={4} style={{padding: 'var(--spacing-5)', maxWidth: 640}}>
-              <Heading level={1}>{name}</Heading>
-              <Text>{description}</Text>
-              <SignupForm />
-              {topics.length > 0 && (
-                <VStack gap={2}>
-                  <Heading level={2}>Topics</Heading>
-                  <ul className="chips" style={{padding: 0}}>
-                    {topics.map((t) => (
-                      <li key={t.slug}>
-                        <a href={`/newsletters/topics/${t.slug}`}>{t.name} ({t.count})</a>
-                      </li>
-                    ))}
-                  </ul>
-                </VStack>
-              )}
-              <Text type="supporting" color="secondary">
-                <a href="/newsletters/rss.xml">RSS feed</a>
-              </Text>
-            </VStack>
+            {selected ? (
+              <EmailIssue key={selected.slug} issue={selected} related={related(issues, selected)} embedded />
+            ) : (
+              <VStack gap={4} style={{padding: 'var(--spacing-5)', maxWidth: 640}}>
+                <Heading level={1}>{name}</Heading>
+                <Text>{description}</Text>
+                <SignupForm />
+                {topics.length > 0 && (
+                  <VStack gap={2}>
+                    <Heading level={2}>Topics</Heading>
+                    <ul className="chips" style={{padding: 0}}>
+                      {topics.map((t) => (
+                        <li key={t.slug}>
+                          <a href={`/newsletters/topics/${t.slug}`}>{t.name} ({t.count})</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </VStack>
+                )}
+                <Text type="supporting" color="secondary">
+                  <a href="/newsletters/rss.xml">RSS feed</a>
+                </Text>
+              </VStack>
+            )}
           </LayoutContent>
         }
       />

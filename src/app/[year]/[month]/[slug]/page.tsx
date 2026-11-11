@@ -2,11 +2,11 @@ import type {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 
 import {JsonLd} from '@/components/JsonLd';
-import {EmailIssue} from '@/components/EmailIssue';
+import {Inbox} from '@/components/Inbox';
 import {SignupForm} from '@/components/SignupForm';
-import {formatDate, getIssue, getIssues, getRelated, slugify} from '@/lib/issues';
+import {formatDate, getIssue, getIssues, getRelated, getTopics, slugify} from '@/lib/issues';
 import {ARCHIVE_CRUMB, HOME_CRUMB, breadcrumbJsonLd, buildMetadata, organizationRef} from '@/lib/seo';
-import {NEWSLETTER_NAME, SITE_URL, href} from '@/lib/site';
+import {NEWSLETTER_DESCRIPTION, NEWSLETTER_NAME, SITE_URL, href} from '@/lib/site';
 
 type Params = Promise<{year: string; month: string; slug: string}>;
 
@@ -60,7 +60,13 @@ export default async function IssuePage({params}: {params: Params}) {
         data={breadcrumbJsonLd([HOME_CRUMB, ARCHIVE_CRUMB, {name: issue.title, path: issue.url}])}
       />
       {issue.layout === 'email' ? (
-        <EmailIssue issue={issue} related={related} />
+        <Inbox
+          issues={getIssues()}
+          name={NEWSLETTER_NAME}
+          description={NEWSLETTER_DESCRIPTION}
+          topics={getTopics()}
+          initialPath={issue.path}
+        />
       ) : (
       <main className="page">
         <nav className="crumbs" aria-label="Breadcrumb">
