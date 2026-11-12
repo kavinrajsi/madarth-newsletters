@@ -99,3 +99,16 @@ body {
 .email-page.embedded:has(iframe) { padding: 0; background: #efefef; }
 .rss-link { font-size: 0.875rem; color: inherit; opacity: 0.75; text-decoration: none; white-space: nowrap; }
 .rss-link:hover { opacity: 1; text-decoration: underline; }
+
+/* Mobile: one pane at a time (see Inbox.tsx); keep the header on one line. */
+@media (max-width: 767px) {
+  html, body { overflow-x: hidden; }
+  .email-page.embedded { padding-left: 0; padding-right: 0; }
+  .email-col { max-width: 100%; }
+  .astryx-layout-content { overflow-x: hidden; }
+  .rss-link { flex-shrink: 0; }
+  nav ol { flex-wrap: nowrap; min-width: 0; overflow: hidden; }
+  /* Phone header: current page only (Back button handles the rest). */
+  nav li:not(:last-child) { display: none; }
+  nav li:last-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 52vw; }
+}

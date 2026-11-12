@@ -24,6 +24,14 @@ function SidebarGlyph(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function BackGlyph(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  );
+}
+
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata'});
 
@@ -38,7 +46,17 @@ export function Inbox({
 }) {
   const [query, setQuery] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const [selectedPath, setSelectedPath] = useState<string | null>(initialPath);
+
+  // Below 768px show one pane at a time: the list, or the open email.
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   const selected = issues.find((i) => i.path === selectedPath) ?? null;
   const homeTitle = `${name} | Newsletter Archive`;
@@ -72,7 +90,7 @@ export function Inbox({
   }, [issues, query]);
 
   const sidebar = (
-    <LayoutPanel width={380} hasDivider>
+    <LayoutPanel width={isMobile ? '100%' : 380} hasDivider>
       <VStack gap={3} style={{height: '100%', minHeight: 0}}>
         <VStack gap={3} style={{padding: 'var(--spacing-4)', paddingBottom: 'var(--spacing-3)'}}>
           <Heading level={2}>Issues</Heading>
@@ -133,17 +151,28 @@ export function Inbox({
   return (
     <div style={{height: '100dvh', width: '100%'}}>
       <Layout
-        start={sidebarOpen ? sidebar : undefined}
+        start={(isMobile ? !selected : sidebarOpen) ? sidebar : undefined}
         header={
           <LayoutHeader hasDivider>
             <HStack gap={3} align="center" justify="between" style={{width: '100%'}}>
               <HStack gap={3} align="center">
-              <IconButton
-                label={sidebarOpen ? 'Hide issues' : 'Show issues'}
-                variant="ghost"
-                icon={<Icon icon={SidebarGlyph} />}
-                onClick={() => setSidebarOpen((o) => !o)}
-              />
+              {isMobile ? (
+                selected && (
+                  <IconButton
+                    label="Back to issues"
+                    variant="ghost"
+                    icon={<Icon icon={BackGlyph} />}
+                    onClick={() => open(null)}
+                  />
+                )
+              ) : (
+                <IconButton
+                  label={sidebarOpen ? 'Hide issues' : 'Show issues'}
+                  variant="ghost"
+                  icon={<Icon icon={SidebarGlyph} />}
+                  onClick={() => setSidebarOpen((o) => !o)}
+                />
+              )}
               <Breadcrumbs separator="›">
                 <BreadcrumbItem href="https://www.madarth.com/">Madarth®</BreadcrumbItem>
                 {selected ? (
