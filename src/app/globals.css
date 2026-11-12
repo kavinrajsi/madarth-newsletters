@@ -105,7 +105,7 @@ body {
   html, body { overflow-x: hidden; }
   .email-page.embedded { padding-left: 0; padding-right: 0; }
   .email-col { max-width: 100%; }
-  .astryx-layout-content { overflow-x: hidden; }
+  .astryx-layout-content { overflow-x: hidden; padding-left: 0 !important; padding-right: 0 !important; }
   .rss-link { flex-shrink: 0; }
   nav ol { flex-wrap: nowrap; min-width: 0; overflow: hidden; }
   /* Phone header: current page only (Back button handles the rest). */
