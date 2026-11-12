@@ -17,6 +17,7 @@ export function buildMetadata(o: {
   return {
     title: o.title,
     description: o.description,
+    robots: {index: true, follow: true},
     alternates: {
       canonical,
       types: {'application/rss+xml': url('/rss.xml')},
